@@ -5,3 +5,4 @@ log/
 
 # Include the src folder
 !src/
+lab1/src/ros_tutorials/
