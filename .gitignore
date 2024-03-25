@@ -1,0 +1,7 @@
+# Ignore colcon builds
+build/
+install/
+log/
+
+# Include the src folder
+!src/
