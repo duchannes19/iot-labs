@@ -35,6 +35,8 @@ wget https://raw.githubusercontent.com/ros2/examples/humble/rclpy/topics/minimal
 4. Change the publisher member class to be like this:
 
 ```
+from geometry_msgs.msg import Twist
+
 class MyTurtle(Node):
 
     def __init__(self):
