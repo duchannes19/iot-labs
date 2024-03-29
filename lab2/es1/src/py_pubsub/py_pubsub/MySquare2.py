@@ -16,7 +16,7 @@ class MyTurtle(Node):
 
     def publish_velocity(self):
         if self.direction == 0:
-            self.velocity.linear.x = 2.0  # move left
+            self.velocity.linear.x = 2.0  
             self.velocity.angular.z = 0.0
             self.direction += 1
         elif self.direction == 1:
@@ -32,7 +32,7 @@ class MyTurtle(Node):
             self.velocity.angular.z =  1.56
             self.direction += 1
         elif self.direction == 4:
-            self.velocity.linear.x = 2.0  # move right
+            self.velocity.linear.x = 2.0 
             self.velocity.angular.z = 0.0
             self.direction += 1
         elif self.direction == 5:
