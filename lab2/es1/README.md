@@ -32,7 +32,7 @@ wget https://raw.githubusercontent.com/ros2/examples/humble/rclpy/topics/minimal
 
 3. (Optional) Rename the example publisher as you like.
 
-4. Change the publisher member class to be like this:
+4. Change the publisher member class to be like this (This is without rotation):
 
 ```
 from geometry_msgs.msg import Twist

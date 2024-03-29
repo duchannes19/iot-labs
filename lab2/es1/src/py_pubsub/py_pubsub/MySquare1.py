@@ -4,6 +4,8 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 
 
+# Without rotating the turtle
+
 class MyTurtle(Node):
 
     def __init__(self):

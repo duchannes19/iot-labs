@@ -20,8 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'talker = py_pubsub.MySquare:main',
-            'listener = py_pubsub.subscriber_member_function:main',
+            'square1 = py_pubsub.MySquare1:main',
+            'square2 = py_pubsub.MySquare2:main',
         ],
     },
 )
