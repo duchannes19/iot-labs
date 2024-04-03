@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'py_pubsub'
+package_name = 'py_srvcli'
 
 setup(
     name=package_name,
@@ -20,9 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'square1 = py_pubsub.MySquare1:main',
-            'square2 = py_pubsub.MySquare2:main',
-            'square3 = py_pubsub.MySquare3:main',
+            'server = py_srvcli.server:main',
+            'client = py_srvcli.client:main',
         ],
     },
 )
