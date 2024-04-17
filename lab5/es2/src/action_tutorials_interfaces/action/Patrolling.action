@@ -1,0 +1,8 @@
+# Request
+int32[] points
+---
+# Result
+int32[] final_position
+---
+# Feedback
+int32[] current_position
