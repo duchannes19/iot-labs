@@ -1,8 +1,6 @@
-# Request
-int32[] points
+# Patrolling.action
+float32[] goal
 ---
-# Result
-int32[] final_position
+float32[] feedback
 ---
-# Feedback
-int32[] current_position
+float32[] result
