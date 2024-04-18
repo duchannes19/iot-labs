@@ -35,8 +35,9 @@ class PatrollingServer(Node):
         #feedback_pose.position.y = self._current_pose.y
         #feedback_msg.feedback.append(feedback_pose)
         #goal_handle.publish_feedback(feedback_msg)
+        self.get_logger().info('Moving...')
         while not self.reached_goal(goal):
-            rclpy.spin_once(self)
+            self.move_to_pose(goal)
         result = Patrolling.Result()
         result.result = goal
         goal_handle.succeed(result)
@@ -46,30 +47,36 @@ class PatrollingServer(Node):
 
     def move_to_pose(self, pose):
         #Log pose
-        self.get_logger().info('Moving to pose: {}'.format(pose))
+        #self.get_logger().info('Moving to pose: {}'.format(pose))
         angle = math.atan2(pose[1] - self._current_pose.y, pose[0] - self._current_pose.x)
         distance = math.sqrt((pose[0] - self._current_pose.x)**2 + (pose[1] - self._current_pose.y)**2)
+        # Log angle and distance
+        #self.get_logger().info('Angle: {}'.format(angle))
+        #self.get_logger().info('Distance: {}'.format(distance))
+        # First rotate and wait then stop rotating and move
         self.rotate(angle)
         self.move(distance)
+        
+    
+    def stop_moving(self):
+        twist = Twist()
+        self._twist_publisher.publish(twist)
 
     def rotate(self, angle):
-        angular_speed = 0.5
+        # Rotate towards the goal
+        angular_speed = angle
         linear_speed = 0.0
         twist = Twist()
         twist.linear.x = linear_speed
         twist.angular.z = angular_speed
         self._twist_publisher.publish(twist)
-        time = abs(angle / angular_speed)
+        time = abs(1 / angle)
         self.get_logger().info('Rotating for {} seconds'.format(time))
         self.create_timer(time, self.stop_moving)
-    
-    def stop_moving(self):
-        twist = Twist()
-        self._twist_publisher.publish(twist)
         
     def move(self, distance):
         angular_speed = 0.0
-        linear_speed = 0.5
+        linear_speed = 1.0
         twist = Twist()
         twist.linear.x = linear_speed
         twist.angular.z = angular_speed
