@@ -3,9 +3,9 @@ from rclpy.action import ActionServer
 from rclpy.node import Node
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist, Pose as PoseMsg
-from action_tutorials_interfaces.action import Patrolling
 import math
 from rclpy.executors import MultiThreadedExecutor
+from turtle_patrol_actions.action import Patrolling
 
 class PatrollingServer(Node):
 
@@ -27,20 +27,24 @@ class PatrollingServer(Node):
     def execute_callback(self, goal_handle):
         self.get_logger().info('Executing patrolling action...')
         goal = goal_handle.request.goal
-        #feedback_msg = Patrolling.Feedback()
+        feedback_msg = Patrolling.Feedback()
         
         self.move_to_pose(goal)
-        #feedback_pose = PoseMsg()
-        #feedback_pose.position.x = self._current_pose.x
-        #feedback_pose.position.y = self._current_pose.y
-        #feedback_msg.feedback.append(feedback_pose)
-        #goal_handle.publish_feedback(feedback_msg)
+        feedback_pose = PoseMsg()
+        feedback_pose.position.x = self._current_pose.x
+        feedback_pose.position.y = self._current_pose.y
+        feedback_msg.feedback.append(feedback_pose)
+        goal_handle.publish_feedback(feedback_msg)
         self.get_logger().info('Moving...')
         while not self.reached_goal(goal):
             self.move_to_pose(goal)
+            
+        # Send the result
         result = Patrolling.Result()
-        result.result = goal
+        print(type(result.result))
+        result.result = True
         goal_handle.succeed(result)
+        return result
 
     def pose_callback(self, msg):
         self._current_pose = msg
@@ -54,25 +58,36 @@ class PatrollingServer(Node):
         #self.get_logger().info('Angle: {}'.format(angle))
         #self.get_logger().info('Distance: {}'.format(distance))
         # First rotate and wait then stop rotating and move
-        self.rotate(angle)
-        self.move(distance)
+        self.rotate(angle, distance)
         
     
     def stop_moving(self):
         twist = Twist()
         self._twist_publisher.publish(twist)
 
-    def rotate(self, angle):
-        # Rotate towards the goal
-        angular_speed = angle
-        linear_speed = 0.0
-        twist = Twist()
-        twist.linear.x = linear_speed
-        twist.angular.z = angular_speed
-        self._twist_publisher.publish(twist)
-        time = abs(1 / angle)
-        self.get_logger().info('Rotating for {} seconds'.format(time))
-        self.create_timer(time, self.stop_moving)
+    def rotate(self, angle, distance):
+        # Calculate the angle difference between the current pose and the goal pose
+        angle_difference = angle - self._current_pose.theta
+
+        # Normalize the angle difference to be between -pi and pi
+        while angle_difference > math.pi:
+            angle_difference -= 2 * math.pi
+        while angle_difference < -math.pi:
+            angle_difference += 2 * math.pi
+
+        # Set the angular speed based on the angle difference
+        angular_speed = 0.5 if angle_difference > 0 else -0.5
+
+        # Rotate the turtle until it faces the goal
+        while abs(angle_difference) > 0.1:
+            twist = Twist()
+            twist.angular.z = angular_speed
+            self._twist_publisher.publish(twist)
+            angle_difference = angle - self._current_pose.theta
+
+        # Stop rotating
+        self.stop_moving()
+        self.move(distance)
         
     def move(self, distance):
         angular_speed = 0.0

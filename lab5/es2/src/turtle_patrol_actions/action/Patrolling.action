@@ -1,6 +1,8 @@
-# Patrolling.action
+# goal
 float32[] goal
 ---
+# feedback
 float32[] feedback
 ---
-float32[] result
+# result
+bool result

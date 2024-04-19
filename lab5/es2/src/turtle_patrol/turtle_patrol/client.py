@@ -2,7 +2,7 @@
 import rclpy
 from rclpy.action import ActionClient
 from rclpy.node import Node
-from action_tutorials_interfaces.action import Patrolling
+from turtle_patrol_actions.action import Patrolling
 
 class PatrollingClient(Node):
 
