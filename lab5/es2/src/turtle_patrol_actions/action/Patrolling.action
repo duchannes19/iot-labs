@@ -1,8 +1,8 @@
-# goal
+# Request
 float32[] goal
 ---
-# feedback
-float32[] feedback
+# Result
+bool arrived
 ---
-# result
-bool result
+# Feedback
+float32[] current_position

@@ -30,10 +30,8 @@ class PatrollingServer(Node):
         feedback_msg = Patrolling.Feedback()
         
         self.move_to_pose(goal)
-        feedback_pose = PoseMsg()
-        feedback_pose.position.x = self._current_pose.x
-        feedback_pose.position.y = self._current_pose.y
-        feedback_msg.feedback.append(feedback_pose)
+        
+        feedback_msg.current_position = [self._current_pose.x, self._current_pose.y]
         goal_handle.publish_feedback(feedback_msg)
         self.get_logger().info('Moving...')
         while not self.reached_goal(goal):
@@ -41,9 +39,8 @@ class PatrollingServer(Node):
             
         # Send the result
         result = Patrolling.Result()
-        print(type(result.result))
-        result.result = True
-        goal_handle.succeed(result)
+        result.arrived = True
+        goal_handle.succeed()
         return result
 
     def pose_callback(self, msg):
