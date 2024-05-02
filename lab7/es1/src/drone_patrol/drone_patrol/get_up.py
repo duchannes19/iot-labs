@@ -9,7 +9,7 @@ from std_msgs.msg import String
 # Global Variables
 MIN_ALTITUDE = 5
 # Angle in quaternion
-ROTATE_ANGLE = 0.5
+ROTATE_SECONDS = 5
 
 # I have a bridge for the velocity and one for the odometry on a drone in gazebo fortress
 
@@ -31,6 +31,7 @@ class MyDrone(Node):
         self.publisher_vel = self.create_publisher(Twist, 'X3/cmd_vel', 10)
         self.subscription_odom = self.create_subscription(Odometry, 'X3/odometry', self.odom_callback, 10)
         self.is_ready = False
+        self.to_rotate = True
 
 
     def odom_callback(self, msg):
@@ -42,23 +43,18 @@ class MyDrone(Node):
             if(self.is_ready == True):
                 self.fly_up(0.0)
 
-            # Get the quaternion from the odometry
-            x = msg.pose.pose.orientation.x
-            y = msg.pose.pose.orientation.y
-            z = msg.pose.pose.orientation.z
-            w = msg.pose.pose.orientation.w
+            # Rotate the drone for 5 seconds
+            if(self.to_rotate == True and self.is_ready == False):
+                # Get the quaternion from the odometry
+                x = msg.pose.pose.orientation.x
+                y = msg.pose.pose.orientation.y
+                z = msg.pose.pose.orientation.z
+                w = msg.pose.pose.orientation.w
 
-            yaw = euler_from_quaternion(x, y, z, w)
-
-            self.get_logger().info('Yaw: [%s]' % str(yaw))
-
-            # Rotate the drone until the angle is reached
-            if yaw[2] < 0.5:
-                self.get_logger().info('I need to rotate')
-                self.rotate(1.0)
-            else:
-                self.rotate(0.0)
-                self.get_logger().info('I am already rotated')
+                yaw = euler_from_quaternion(x, y, z, w)
+                self.get_logger().info('Yaw: [%s]' % str(yaw))
+                self.rotate(1.0, ROTATE_SECONDS)
+                return 0
     
     def fly_up(self, altitude):
         msg = Twist()
@@ -69,11 +65,24 @@ class MyDrone(Node):
             self.is_ready = True
             self.get_logger().info('I am already up')
 
-    def rotate(self, angle):
+    def rotate(self, angle, seconds):
         msg = Twist()
         msg.angular.z = angle
         self.publisher_vel.publish(msg)
-        self.get_logger().info('Publishing: [%f]' % msg.angular.z)
+
+        # Get the current time
+        start_time = self.get_clock().now().to_msg()
+
+        # Loop for the specified number of seconds
+        while (self.get_clock().now().to_msg().sec - start_time.sec) < seconds:
+            pass
+        
+        # Stop the drone
+        msg.angular.z = 0.0
+        self.publisher_vel.publish(msg)
+        self.get_logger().info('Drone stopped')
+        self.to_rotate = False
+        
         
 
 def euler_from_quaternion(x, y, z, w):
