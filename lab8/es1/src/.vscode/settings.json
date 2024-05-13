@@ -1,0 +1,14 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/fede3751/Desktop/iot_2024/lecture_7/install/exercise8_src/lib/python3.10/site-packages",
+        "/home/fede3751/Desktop/iot_2024/lecture_7/install/exercise8_interfaces/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/fede3751/Desktop/iot_2024/lecture_7/install/exercise8_src/lib/python3.10/site-packages",
+        "/home/fede3751/Desktop/iot_2024/lecture_7/install/exercise8_interfaces/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}
